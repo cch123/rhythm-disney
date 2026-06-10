@@ -687,20 +687,20 @@ function cardFrame(x, y, w, h) {
   }
 }
 
-const MENU_Y0 = 216, MENU_DY = 82;
+const MENU_Y0 = 196, MENU_DY = 64;
 
 function drawMenu(rt) {
   g.fillStyle = INK;
   g.fillRect(0, 0, W, H);
   cardFrame(36, 30, W - 72, H - 60);
-  text('今晚节目单', W / 2, 104, 48, CREAM);
-  text("— TONIGHT'S PROGRAMME · RUBBER HOSE REVUE —", W / 2, 154, 16, MID);
+  text('今晚节目单', W / 2, 96, 44, CREAM);
+  text("— TONIGHT'S PROGRAMME · RUBBER HOSE REVUE —", W / 2, 142, 15, MID);
   GAMES.forEach((game, i) => {
     const y = MENU_Y0 + i * MENU_DY;
-    text(`${i + 1} · ${game.title}`, W / 2, y - 12, 30, CREAM);
-    text(`${game.subtitle} ・ ${game.menuDesc}`, W / 2, y + 20, 15, MID);
+    text(`${i + 1} · ${game.title}`, W / 2, y - 11, 26, CREAM);
+    text(`${game.subtitle} ・ ${game.menuDesc}`, W / 2, y + 15, 13, MID);
   });
-  if (Math.floor(rt * 2) % 2 === 0) text('▶ 按 1 / 2 / 3 或点击选择节目', W / 2, 470, 22, CREAM);
+  if (Math.floor(rt * 2) % 2 === 0) text(`▶ 按 1-${GAMES.length} 或点击选择节目`, W / 2, 492, 20, CREAM);
 }
 
 function menuIndexAt(e) {
@@ -709,7 +709,7 @@ function menuIndexAt(e) {
   const y = (e.clientY - r.top) * (H / r.height);
   for (let i = 0; i < GAMES.length; i++) {
     const ry = MENU_Y0 + i * MENU_DY;
-    if (x > 120 && x < W - 120 && y > ry - 36 && y < ry + 38) return i;
+    if (x > 120 && x < W - 120 && y > ry - 30 && y < ry + 32) return i;
   }
   return -1;
 }
@@ -821,9 +821,13 @@ function frame() {
  *   - 其余按键完全不拦截。 */
 const GAME_KEYS = new Set([
   'Space', 'KeyJ', 'KeyP', 'Escape', 'Enter', 'KeyM',
-  'Digit1', 'Digit2', 'Digit3', 'Numpad1', 'Numpad2', 'Numpad3',
+  'Digit1', 'Digit2', 'Digit3', 'Digit4',
+  'Numpad1', 'Numpad2', 'Numpad3', 'Numpad4',
 ]);
-const MENU_DIGIT = { Digit1: 0, Digit2: 1, Digit3: 2, Numpad1: 0, Numpad2: 1, Numpad3: 2 };
+const MENU_DIGIT = {
+  Digit1: 0, Digit2: 1, Digit3: 2, Digit4: 3,
+  Numpad1: 0, Numpad2: 1, Numpad3: 2, Numpad4: 3,
+};
 
 window.addEventListener('keydown', e => {
   if (e.isComposing) return;                           // 输入法组合中
