@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>橡皮管拳击｜RUBBER HOSE BOXING</title>
+<style>
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: radial-gradient(ellipse at 50% 36%, #2b251c 0%, #171209 60%, #0b0906 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    overflow: hidden;
+  }
+  canvas {
+    border: 12px solid #221c13;
+    outline: 2px solid #3b342a;
+    border-radius: 8px;
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.8), 0 0 0 1px #000;
+    touch-action: manipulation;
+    cursor: pointer;
+    background: #e7dfc8;
+  }
+  .caption {
+    font-family: Georgia, "Songti SC", "STSong", serif;
+    color: #8a8071;
+    font-size: 12px;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+<canvas id="game" width="960" height="540"></canvas>
+<div class="caption">Rubber Hose Boxing &middot; Inkwell Pictures &middot; MCMXXVI</div>
+<script src="game.js"></script>
+</body>
+</html>
