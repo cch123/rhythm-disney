@@ -814,8 +814,23 @@ function frame() {
 }
 
 /* ---------------- 输入 ---------------- */
+/* 键位隔离原则：
+ *   - 带 Cmd / Ctrl / Alt 修饰键的组合一律放行给浏览器，不进入游戏；
+ *   - 游戏消费的裸按键统一 preventDefault + stopPropagation，
+ *     阻断浏览器默认行为（空格滚动、Enter 激活焦点元素等）；
+ *   - 其余按键完全不拦截。 */
+const GAME_KEYS = new Set([
+  'Space', 'KeyJ', 'KeyP', 'Escape', 'Enter', 'KeyM',
+  'Digit1', 'Digit2', 'Digit3', 'Numpad1', 'Numpad2', 'Numpad3',
+]);
+const MENU_DIGIT = { Digit1: 0, Digit2: 1, Digit3: 2, Numpad1: 0, Numpad2: 1, Numpad3: 2 };
+
 window.addEventListener('keydown', e => {
-  if (e.code === 'Space') e.preventDefault();
+  if (e.isComposing) return;                           // 输入法组合中
+  if (e.metaKey || e.ctrlKey || e.altKey) return;      // 浏览器快捷键放行
+  if (!GAME_KEYS.has(e.code)) return;
+  e.preventDefault();
+  e.stopPropagation();
   if (e.repeat) return;
   if (state === 'playing') {
     if (e.code === 'KeyP') { pauseToggle(); return; }
@@ -825,19 +840,21 @@ window.addEventListener('keydown', e => {
     if (e.code === 'Escape' || e.code === 'KeyM') { exitToMenu(); return; }
     if (e.code === 'Space' || e.code === 'Enter' || e.code === 'KeyJ') startGame(cur);
   } else {
-    if (e.code === 'Digit1' && GAMES[0]) startGame(GAMES[0]);
-    if (e.code === 'Digit2' && GAMES[1]) startGame(GAMES[1]);
-    if (e.code === 'Digit3' && GAMES[2]) startGame(GAMES[2]);
+    const i = MENU_DIGIT[e.code];
+    if (i != null && GAMES[i]) startGame(GAMES[i]);
   }
 });
 
 window.addEventListener('keyup', e => {
-  if (state === 'playing' && !paused && (e.code === 'Space' || e.code === 'KeyJ') && cur.onRelease) {
+  if (GAME_KEYS.has(e.code)) e.preventDefault();
+  /* 松键不按修饰键过滤：长按期间即使误触了修饰键，松手也必须触发收声 */
+  if (state === 'playing' && !paused && (e.code === 'Space' || e.code === 'KeyJ') && cur && cur.onRelease) {
     cur.onRelease(actx.currentTime);
   }
 });
 
 canvas.addEventListener('pointerdown', e => {
+  if (e.button !== 0) return;                          // 仅响应主键，右键/中键交还浏览器
   e.preventDefault();
   if (state === 'playing') {
     if (!paused) cur.onPress(actx.currentTime);
@@ -849,12 +866,20 @@ canvas.addEventListener('pointerdown', e => {
   }
 });
 
-canvas.addEventListener('pointerup', () => {
+canvas.addEventListener('pointerup', e => {
+  if (e.button !== 0) return;
   if (state === 'playing' && !paused && cur && cur.onRelease) cur.onRelease(actx.currentTime);
 });
 
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+
 document.addEventListener('visibilitychange', () => {
   if (document.hidden && state === 'playing' && !paused) pauseToggle();
+});
+
+/* 窗口失焦（如 Cmd+Tab 切走）自动进入幕间休息，长按状态由 pauseToggle 内的强制收声兜底 */
+window.addEventListener('blur', () => {
+  if (state === 'playing' && !paused) pauseToggle();
 });
 
 /* ---------------- 画布与离屏资源初始化 ---------------- */
