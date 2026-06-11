@@ -821,12 +821,12 @@ function frame() {
  *   - 其余按键完全不拦截。 */
 const GAME_KEYS = new Set([
   'Space', 'KeyJ', 'KeyP', 'Escape', 'Enter', 'KeyM',
-  'Digit1', 'Digit2', 'Digit3', 'Digit4',
-  'Numpad1', 'Numpad2', 'Numpad3', 'Numpad4',
+  'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5',
+  'Numpad1', 'Numpad2', 'Numpad3', 'Numpad4', 'Numpad5',
 ]);
 const MENU_DIGIT = {
-  Digit1: 0, Digit2: 1, Digit3: 2, Digit4: 3,
-  Numpad1: 0, Numpad2: 1, Numpad3: 2, Numpad4: 3,
+  Digit1: 0, Digit2: 1, Digit3: 2, Digit4: 3, Digit5: 4,
+  Numpad1: 0, Numpad2: 1, Numpad3: 2, Numpad4: 3, Numpad5: 4,
 };
 
 window.addEventListener('keydown', e => {
